@@ -64,6 +64,7 @@ function wrapArray(arr) {
 exports.create = function (callback, options) {
     if (options === undefined) options = {};
     if (options.slimerPath === undefined) options.slimerPath = './slimerjs-0.9.4/slimerjs';
+    if (options.slimerXvfb === undefined) options.slimerXvfb = false;
     if (options.parameters === undefined) options.parameters = {};
 
     function spawnSlimer (callback) {
@@ -72,8 +73,13 @@ exports.create = function (callback, options) {
             args.push('--' + parm + '=' + options.parameters[parm]);
         }
         args = args.concat([path.join(__dirname, 'bridge.js')]);
-	//console.log('launch ' + options.slimerPath + ' ' + args);
-        var slimer = spawn(options.slimerPath, args);
+        if(options.slimerXvfb){
+          args = args.unshift(options.slimerPath);
+          var slimer = spawn('xvfb-run', args);
+        }else{
+          //console.log('launch ' + options.slimerPath + ' ' + args);
+          var slimer = spawn(options.slimerPath, args);
+        }
 	
         // Ensure that the child process is closed when this process dies
         var closeChild = function () {
