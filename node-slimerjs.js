@@ -75,9 +75,11 @@ exports.create = function (callback, options) {
         args = args.concat([path.join(__dirname, 'bridge.js')]);
         if(options.slimerXvfb){
           args = args.unshift(options.slimerPath);
+	  console.log('xvfb-run '+ args);
           var slimer = spawn('xvfb-run', args);
         }else{
           //console.log('launch ' + options.slimerPath + ' ' + args);
+	  console.log(options.slimerPath+' '+ args);
           var slimer = spawn(options.slimerPath, args);
         }
 	
